@@ -7,9 +7,9 @@ import GeoJSON from 'ol/format/GeoJSON.js';
 import { Tile as TileLayer, Vector as VectorLayer } from 'ol/layer.js';
 import Camiler from './camiler.js'
 import { Icon, Style } from 'ol/style.js'
-import { click, pointerMove, altKeyOnly } from 'ol/events/condition.js';
-import Select from 'ol/interaction/Select.js';
-import Overlay from 'ol/Overlay.js';
+// import { click, pointerMove, altKeyOnly } from 'ol/events/condition.js';
+// import Select from 'ol/interaction/Select.js';
+// import Overlay from 'ol/Overlay.js';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -17,10 +17,30 @@ import Overlay from 'ol/Overlay.js';
 })
 export class AppComponent implements OnInit {
   title = 'basaksehir-camiler';
-  @ViewChild('map') map: ElementRef
-  @ViewChild('overlayer') overlayer: ElementRef
+  @ViewChild('map') mapRef: ElementRef
   name
-  capacity
+  address
+  lastColoredFeature
+  map: Map
+  style = new Style({
+    image: new Icon({
+      anchor: [0.5, 46],
+      anchorXUnits: 'fraction',
+      anchorYUnits: 'pixels',
+      src: 'assets/mosque.png',
+      scale: .5,
+    })
+  });
+  selectedStyle = new Style({
+    image: new Icon({
+      anchor: [0.5, 46],
+      anchorXUnits: 'fraction',
+      anchorYUnits: 'pixels',
+      src: 'assets/mosque.png',
+      scale: .5,
+      color: '#00ff00'
+    })
+  });
   ngOnInit() {
     var map = new Map({
       layers: [
@@ -28,7 +48,7 @@ export class AppComponent implements OnInit {
           source: new OSM()
         })
       ],
-      target: this.map.nativeElement,
+      target: this.mapRef.nativeElement,
       view: new View({
         projection: 'EPSG:3857',
         center: [3205929.25726942, 5027538.321153645],
@@ -36,16 +56,8 @@ export class AppComponent implements OnInit {
       }),
       controls: []
     })
-
-    const style = new Style({
-      image: new Icon(({
-        anchor: [0.5, 46],
-        anchorXUnits: 'fraction',
-        anchorYUnits: 'pixels',
-        src: 'assets/mosque.png',
-        scale: .5
-      }))
-    });
+    this.map = map
+    // window.map = map
     var source = new VectorSource({
       loader: function (extent, resolution, projection) {
         source.addFeatures(
@@ -54,34 +66,24 @@ export class AppComponent implements OnInit {
     });
     var layer = new VectorLayer({
       source: source,
-      style
+      style: this.style
     })
     map.addLayer(layer)
 
-    // window.map = map
-    // var selectPointerMove = new Select({
-    //   condition: pointerMove
-    // });
-    // map.addInteraction(selectPointerMove)
-    // selectPointerMove.on('select', function(e,e2){
-    //   console.log('e', e.target)
-    // })
+    map.on('pointermove', (e) => this.selectFeature(e, 3))
+    map.on('singleclick', (e) => this.selectFeature(e, 10))
+  }
+  selectFeature(browserEvent, hitTolerance) {
+    var pixel = browserEvent.pixel;
+    this.map.forEachFeatureAtPixel(pixel, (feature, layer) => {
+      if (this.lastColoredFeature) {
+        this.lastColoredFeature.setStyle(this.style)
+      }
+      this.lastColoredFeature = feature
+      feature.setStyle(this.selectedStyle)
+      this.address = feature.get('adres')
+      this.name = feature.get('adi')
+    }, { hitTolerance })
 
-    // var overlay = new Overlay({
-    //   element: this.overlayer.nativeElement,
-    //   autoPan: true,
-    //   autoPanAnimation: {
-    //     duration: 250
-    //   }
-    // });
-    // map.addOverlay(overlay)
-    map.on('pointermove', (browserEvent) => {
-      var coordinate = browserEvent.coordinate;
-      var pixel = browserEvent.pixel;
-      map.forEachFeatureAtPixel(pixel, (feature, layer) => {
-        this.capacity = feature.get('capacity')
-        this.name = feature.get('name')
-      })
-    })
   }
 }
