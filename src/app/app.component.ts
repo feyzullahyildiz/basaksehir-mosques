@@ -5,8 +5,8 @@ import View from 'ol/View';
 import { OSM, Vector as VectorSource } from 'ol/source.js';
 import GeoJSON from 'ol/format/GeoJSON.js';
 import { Tile as TileLayer, Vector as VectorLayer } from 'ol/layer.js';
-import Camiler from './camiler.js'
-import { Icon, Style } from 'ol/style.js'
+import Camiler from './camiler.js';
+import { Icon, Style } from 'ol/style.js';
 // import { click, pointerMove, altKeyOnly } from 'ol/events/condition.js';
 // import Select from 'ol/interaction/Select.js';
 // import Overlay from 'ol/Overlay.js';
@@ -17,11 +17,11 @@ import { Icon, Style } from 'ol/style.js'
 })
 export class AppComponent implements OnInit {
   title = 'basaksehir-camiler';
-  @ViewChild('map') mapRef: ElementRef
-  name
-  address
-  lastColoredFeature
-  map: Map
+  @ViewChild('map') mapRef: ElementRef;
+  name;
+  address;
+  lastColoredFeature;
+  map: Map;
   style = new Style({
     image: new Icon({
       anchor: [0.5, 46],
@@ -42,7 +42,7 @@ export class AppComponent implements OnInit {
     })
   });
   ngOnInit() {
-    var map = new Map({
+    const map = new Map({
       layers: [
         new TileLayer({
           source: new OSM()
@@ -55,35 +55,35 @@ export class AppComponent implements OnInit {
         zoom: 14
       }),
       controls: []
-    })
-    this.map = map
-    // window.map = map
-    var source = new VectorSource({
+    });
+    this.map = map;
+    const source = new VectorSource({
       loader: function (extent, resolution, projection) {
         source.addFeatures(
           new GeoJSON().readFeatures(Camiler, { featureProjection: projection }));
       }
     });
-    var layer = new VectorLayer({
+    console.log('source', source)
+    const layer = new VectorLayer({
       source: source,
       style: this.style
-    })
-    map.addLayer(layer)
+    });
+    map.addLayer(layer);
 
-    map.on('pointermove', (e) => this.selectFeature(e, 3))
-    map.on('singleclick', (e) => this.selectFeature(e, 10))
+    map.on('pointermove', (e) => this.selectFeature(e, 3));
+    map.on('singleclick', (e) => this.selectFeature(e, 10));
   }
   selectFeature(browserEvent, hitTolerance) {
-    var pixel = browserEvent.pixel;
+    const pixel = browserEvent.pixel;
     this.map.forEachFeatureAtPixel(pixel, (feature, layer) => {
       if (this.lastColoredFeature) {
-        this.lastColoredFeature.setStyle(this.style)
+        this.lastColoredFeature.setStyle(this.style);
       }
-      this.lastColoredFeature = feature
-      feature.setStyle(this.selectedStyle)
-      this.address = feature.get('adres')
-      this.name = feature.get('adi')
-    }, { hitTolerance })
+      this.lastColoredFeature = feature;
+      feature.setStyle(this.selectedStyle);
+      this.address = feature.get('adres');
+      this.name = feature.get('adi');
+    }, { hitTolerance });
 
   }
 }
