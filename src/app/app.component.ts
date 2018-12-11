@@ -63,7 +63,6 @@ export class AppComponent implements OnInit {
           new GeoJSON().readFeatures(Camiler, { featureProjection: projection }));
       }
     });
-    console.log('source', source)
     const layer = new VectorLayer({
       source: source,
       style: this.style
