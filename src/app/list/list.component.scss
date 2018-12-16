@@ -1,0 +1,64 @@
+:host {
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: auto;
+  ul.mosques {
+    position: relative;
+    list-style: none;
+    overflow: auto;
+    padding: 0.5rem;
+    li {
+      margin: 6px 2px;
+      padding: 4px 2px;
+      box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.6);
+      
+      label {
+        position: relative;
+        // background-color: aqua;
+        display: flex;
+        cursor: pointer;
+        align-items: center;
+        div{
+          flex-grow: 1;
+        }
+        input[type="checkbox"] {
+          position: relative;
+          opacity: 0;
+          width: 0;
+          height: 0;
+          &:checked + span.rounded {
+            background-color: greenyellow;
+          }
+        }
+        span.rounded{
+          position: relative;
+          top: 0;
+          width: 12px;
+          height: 12px;
+          background-color: red;
+          border: 1px solid black;
+          
+
+        }
+      }
+    }
+  }
+  div.settings{
+    span{
+
+    }
+    label{
+      display: flex;
+      // background-color: aqua;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      input[type=checkbox]{
+        width: 20px;
+        height: 20px;
+    }
+    }
+  }
+}

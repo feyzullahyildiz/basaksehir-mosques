@@ -1,3 +1,24 @@
-<p>
-  map works!
-</p>
+<div class="container">
+  <div #map class="map"></div>
+  <!-- <div class="overlay">
+    <span>
+      Adı: {{name}}
+    </span>
+    <span>
+      Adresi: {{address}}
+    </span>
+  </div> -->
+  <div class="list">
+    <app-list></app-list>
+  </div>
+</div>
+<app-feature
+[mosque]="mosque.feature"
+[selected]="mosque.selected"
+[hover]="mosque.hover"
+*ngFor="let mosque of dataService.mosques"
+(selectChange)="mosqueSelectChange(mosque, $event)"
+(hoverChange)="mosqueHoverChange(mosque, $event)"
+>
+
+</app-feature>

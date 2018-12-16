@@ -1,0 +1,45 @@
+<div class="settings">
+  <label>
+    <input (change)="isSelectedUpChange($event)" type="checkbox">
+      <span>
+        Seçilenleri Yukarı Al
+      </span>
+  </label>
+</div>
+<ul class="mosques">
+  <ng-container *ngIf="isSelectedUp">
+      <li *ngFor="let mosque of selectedMosques">
+          <label class="checbox">
+              <div>
+                  {{mosque.feature.properties.adi}}
+                </div>
+              <input type="checkbox" [checked]="mosque.selected" (change)="mosque.selected = !mosque.selected">
+              <span class="rounded"></span>
+      
+          </label>
+        </li>
+      <li *ngFor="let mosque of unSelectedMosques">
+          <label class="checbox">
+              <div>
+                  {{mosque.feature.properties.adi}}
+                </div>
+              <input type="checkbox" [checked]="mosque.selected" (change)="mosque.selected = !mosque.selected">
+              <span class="rounded"></span>
+      
+          </label>
+        </li>
+  </ng-container>
+  <ng-container *ngIf="!isSelectedUp">
+    <li *ngFor="let mosque of dataService.mosques">
+      <label class="checbox">
+        <div>
+          {{mosque.feature.properties.adi}}
+        </div>
+        <input type="checkbox" [checked]="mosque.selected" (change)="mosque.selected = !mosque.selected">
+        <span class="rounded"></span>
+
+      </label>
+    </li>
+  </ng-container>
+
+</ul>
